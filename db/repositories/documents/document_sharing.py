@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.dependencies.mail_service import mail_service
 from api.dependencies.repositories import get_key
 from core.config import settings
-from core.exceptions import HTTP_404
+from core.exceptions import HTTP_404, HTTP_500
 from db.tables.auth.auth import User
 from db.tables.documents.document_sharing import DocumentSharing
 from schemas.auth.bands import TokenData
@@ -75,8 +75,10 @@ class DocumentSharingRepository:
             delete(DocumentSharing)
             .where(DocumentSharing.expires_at <= now)
         )
-
-        await self.session.execute(stmt)
+        try:
+            await self.session.execute(stmt)
+        except Exception as e:
+            raise HTTP_500() from e
 
     async def get_presigned_url(self, doc: Dict[str, Any]) -> Union[str, Dict[str, str]]:
         try:
@@ -121,16 +123,18 @@ class DocumentSharingRepository:
             visits=visits,
             share_to=share_to
         )
+        try:
+            self.session.add(share_entry)
+            await self.session.commit()
+            await self.session.refresh(share_entry)
 
-        self.session.add(share_entry)
-        await self.session.commit()
-        await self.session.refresh(share_entry)
-
-        response = share_entry.__dict__
-        return {
-            "shareable_link": f"{settings.host_url}{settings.api_prefix}/doc/{response['url_id']}",
-            "visits": response["visits"]
-        }
+            response = share_entry.__dict__
+            return {
+                "shareable_link": f"{settings.host_url}{settings.api_prefix}/doc/{response['url_id']}",
+                "visits": response["visits"]
+            }
+        except Exception as e:
+            raise HTTP_500() from e
 
     async def get_redirect_url(self, url_id: str):
 
@@ -185,6 +189,3 @@ class DocumentSharingRepository:
             raise HTTP_404(
                 msg="The link has expired..."
             ) from e
-
-    async def notify(self, user: TokenData, receiver: List[str]):
-        ...
