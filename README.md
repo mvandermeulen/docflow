@@ -29,25 +29,25 @@ DocFlow is a powerful Document Management API designed to streamline document ha
 - 💡 Text Analysis and OCR
 
 ## 📖 API Documentation
-Explore the [API Documentation](https://documenter.getpostman.com/view/20984268/2s9YJbzMqX) for detailed information on how to use DocFlow's features.
+Explore the [API Documentation](https://documenter.getpostman.com/view/20984268/2s9YRGxUcp) for detailed information on how to use DocFlow's features.
 
 ## 🧩 Implementation Detail
 
 
-| Features                         | Implementation Detail                                           |
-|----------------------------------|-----------------------------------------------------------------|
-| Upload                           | [Detail](https://github.com/jiisanda/docflow#-document-upload)  |
-| Download                         |                                                                 |
-| Organization/Searching a Doc     |                                                                 |
-| Versioning                       |                                                                 |
-| Sharing                          | [Detail](https://github.com/jiisanda/docflow#-document-sharing) |
-| Authorization and Authentication |                                                                 |
-| Access Control List              |                                                                 |
-| Deletion and Archiving           |                                                                 |
-| Send File via Email              |                                                                 |
-| Conversion to PDF                |                                                                 |
-| Full Text Search                 |                                                                 |
-| Text Analysis and OCR            |                                                                 |
+| Features                         | Implementation Detail                                            |
+|----------------------------------|------------------------------------------------------------------|
+| Upload                           | [Detail](https://github.com/jiisanda/docflow#-document-upload)   |
+| Download                         | [Detail](https://github.com/jiisanda/docflow#-document-download) |
+| Organization/Searching a Doc     |                                                                  |
+| Versioning                       |                                                                  |
+| Sharing                          | [Detail](https://github.com/jiisanda/docflow#-document-sharing)  |
+| Authorization and Authentication |                                                                  |
+| Access Control List              |                                                                  |
+| Deletion and Archiving           |                                                                  |
+| Send File via Email              |                                                                  |
+| Conversion to PDF                |                                                                  |
+| Full Text Search                 |                                                                  |
+| Text Analysis and OCR            |                                                                  |
 
 
 ### 📤 Document Upload
@@ -57,6 +57,14 @@ Here's how documents are uploaded in DocFlow:
 ![upload-document](docs/imgs/document/document_upload.png)
 
 For a detailed explanation, visit the [Document Upload Documentation]().
+
+### 📥 Document Download
+
+Here's how a user can download a file in DocFlow.
+
+![download-document](docs/imgs/document/docflow_download.png)
+
+For detailed explanation, visit the [Document Download Documentation](). 
 
 ### 📨 Document Sharing
 
@@ -72,6 +80,6 @@ For detailed instructions, visit the [Document Sharing Documentation]().
 
 ## 📧 Contact Us
 
-For any questions or support, please [contact](harshjaiswal2307@gmail.com).
+For any questions or support, please [contact](mailto:harshjaiswal2307@gmail.com).
 
 Enjoy using DocFlow to manage your documents seamlessly!

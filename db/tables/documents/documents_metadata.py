@@ -6,7 +6,7 @@ from sqlalchemy import Column, String, Integer, ARRAY, text, DateTime, Enum, For
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, relationship
 
-from db.models import Base, metadata, engine
+from db.models import Base, metadata, async_engine
 from db.tables.base_class import StatusEnum
 
 
@@ -42,8 +42,3 @@ class DocumentMetadata(Base):
 
     update_access = relationship("User", secondary=doc_user_access, passive_deletes=True)
     owner = relationship("User", back_populates="owner_of")
-
-
-def create_table():
-    metadata.drop_all(engine)
-    metadata.create_all(engine)
