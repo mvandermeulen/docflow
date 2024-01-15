@@ -1,7 +1,7 @@
 # DocFlow - Document Management API
 
 <div align="center">
-    <img src="docs/github-banner.png"><br>
+    <img src="app/docs/github-banner.png"><br>
 </div>
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
@@ -23,13 +23,26 @@ DocFlow is a powerful Document Management API designed to streamline document ha
 - 💡 Authentication and Authorization
 - 💡 Access Control List
 - 💡 Deletion and Archiving
+- 💡 Document Preview
 - 💡 Send file via Email
-- 💡 Conversion to PDF
-- 💡 Full Text Search
-- 💡 Text Analysis and OCR
 
-## 📖 API Documentation
+
+## 📖 API Documentation and Image
+
 Explore the [API Documentation](https://documenter.getpostman.com/view/20984268/2s9YRGxUcp) for detailed information on how to use DocFlow's features.
+
+Details about features and commands can be found [here](app/docs).
+
+Download docker image from [docker-hub](https://hub.docker.com/r/jiisanda/docflow).
+
+Or just run
+```commandline
+docker pull jiisanda/docflow:1
+```
+
+## 🔸 Setup Docflow 
+
+Follow the steps outlined in the [setup.md](app/docs/setup.md) file.
 
 ## 🧩 Implementation Detail
 
@@ -38,31 +51,23 @@ Explore the [API Documentation](https://documenter.getpostman.com/view/20984268/
 |----------------------------------|------------------------------------------------------------------|
 | Upload                           | [Detail](https://github.com/jiisanda/docflow#-document-upload)   |
 | Download                         | [Detail](https://github.com/jiisanda/docflow#-document-download) |
-| Organization/Searching a Doc     |                                                                  |
-| Versioning                       |                                                                  |
 | Sharing                          | [Detail](https://github.com/jiisanda/docflow#-document-sharing)  |
-| Authorization and Authentication |                                                                  |
-| Access Control List              |                                                                  |
-| Deletion and Archiving           |                                                                  |
-| Send File via Email              |                                                                  |
-| Conversion to PDF                |                                                                  |
-| Full Text Search                 |                                                                  |
-| Text Analysis and OCR            |                                                                  |
+| Document Preview                 | [Detail](https://github.com/jiisanda/docflow#-document-preview)  |
 
 
 ### 📤 Document Upload
 
 Here's how documents are uploaded in DocFlow:
 
-![upload-document](docs/imgs/document/document_upload.png)
+![upload-document](app/docs/imgs/document/document_upload.png)
 
-For a detailed explanation, visit the [Document Upload Documentation]().
+For a detailed explanation, visit the [Document Upload Documentation](app/docs/features/upload.md).
 
 ### 📥 Document Download
 
 Here's how a user can download a file in DocFlow.
 
-![download-document](docs/imgs/document/docflow_download.png)
+![download-document](app/docs/imgs/document/docflow_download.png)
 
 For detailed explanation, visit the [Document Download Documentation](). 
 
@@ -70,9 +75,17 @@ For detailed explanation, visit the [Document Download Documentation]().
 
 Learn how to share documents in DocFlow:
 
-![share-document](docs/imgs/sharing/document_sharing.png)
+![share-document](app/docs/imgs/sharing/document_sharing.png)
 
-For detailed instructions, visit the [Document Sharing Documentation]().
+For detailed instructions, visit the [Document Sharing Documentation](app/docs/features/sharing.md).
+
+### 👀 Document Preview
+
+Here's how the preview of docs works in DocFlow.
+
+![preview-document](app/docs/imgs/document/document_preview.png)
+
+For detailed instructions, visit the [Document Preview Documentation](app/docs/features/preview.md)
 
 ## 📜 License
 
@@ -82,4 +95,4 @@ For detailed instructions, visit the [Document Sharing Documentation]().
 
 For any questions or support, please [contact](mailto:harshjaiswal2307@gmail.com).
 
-Enjoy using DocFlow to manage your documents seamlessly!
+Test DocFlow to manage documents seamlessly!
