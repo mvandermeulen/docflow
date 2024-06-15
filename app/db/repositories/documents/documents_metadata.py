@@ -105,7 +105,7 @@ class DocumentMetadataRepository:
     async def _delete_access(self, document) -> None:
         await self.session.execute(doc_user_access.delete().where(doc_user_access.c.doc_id == document.id))
 
-    async def _auto_delete(self, bin_items: List[Row | Row]) -> bool | None:
+    async def _auto_delete(self, bin_items: List) -> bool | None:
 
         for item in bin_items:
             if item.DocumentMetadata.created_at <= datetime.now(timezone.utc):
@@ -252,7 +252,6 @@ class DocumentMetadataRepository:
         )
 
         result = (await self.session.execute(stmt)).fetchall()
-
         # delete documents that lived 30 days in bin
         if await self._auto_delete(result):
             result = (await self.session.execute(stmt)).fetchall()
@@ -281,18 +280,25 @@ class DocumentMetadataRepository:
                 msg="Doc does not exists"
             )
 
-    async def perm_delete(self, document: UUID | None, owner: TokenData, delete_all: bool) -> None:
+    async def perm_delete_a_doc(self, document: UUID | None, owner: TokenData) -> None:
 
-        if delete_all:
-            stmt = (
-                delete(DocumentMetadata)
-                .where(DocumentMetadata.owner_id == owner.id)
-            )
-        else:
-            stmt = (
-                delete(DocumentMetadata)
-                .where(DocumentMetadata.id == document)
-            )
+        stmt = (
+            delete(DocumentMetadata)
+            .where(DocumentMetadata.owner_id == owner.id)
+            .where(DocumentMetadata.id == document)
+            .where(DocumentMetadata.status == StatusEnum.deleted)
+        )
+
+        await self.session.execute(stmt)
+
+    async def empty_bin(self, owner: TokenData):
+
+        stmt = (
+            delete(DocumentMetadata)
+            .where(DocumentMetadata.owner_id == owner.id)
+            .where(DocumentMetadata.status == StatusEnum.deleted)
+        )
+
         await self.session.execute(stmt)
 
     async def archive(self, file: str, user: TokenData):

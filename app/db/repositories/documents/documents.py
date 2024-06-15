@@ -1,13 +1,12 @@
 import os.path
 import tempfile
-from typing import Any, Dict, List
+from typing import Any, Dict
 import boto3
 import hashlib
 
 from botocore.exceptions import ClientError
 from fastapi import File
 from fastapi.responses import FileResponse
-from sqlalchemy.engine import Row
 from ulid import ULID
 
 from app.api.dependencies.constants import SUPPORTED_FILE_TYPES
@@ -16,6 +15,21 @@ from app.core.config import settings
 from app.core.exceptions import HTTP_400, HTTP_404
 from app.db.repositories.documents.documents_metadata import DocumentMetadataRepository
 from app.schemas.auth.bands import TokenData
+
+
+async def perm_delete(
+        file: str,
+        delete_all: bool, meta_repo: DocumentMetadataRepository, user: TokenData
+) -> None:
+
+    if delete_all:
+        await meta_repo.empty_bin(owner=user)
+    else:
+        doc = await meta_repo.bin_list(owner=user)
+        for docs in doc.get("response"):
+            if docs.DocumentMetadata.name == file:
+                doc_id = docs.DocumentMetadata.id
+                await meta_repo.perm_delete_a_doc(document=doc_id, owner=user)
 
 
 class DocumentRepository:
@@ -65,7 +79,7 @@ class DocumentRepository:
         self.s3_bucket.put_object(Bucket=settings.s3_bucket, Key=key, Body=contents)
 
         return {
-            "response": "file added",
+            "response": "file_added",
             "upload": {
                 "owner_id": user.id,
                 "name": file.filename,
@@ -85,7 +99,7 @@ class DocumentRepository:
         self.s3_bucket.put_object(Bucket=settings.s3_bucket, Key=key, Body=contents)
 
         return {
-            "response": "file updated",
+            "response": "file_updated",
             "is_owner": is_owner,
             "upload": {
                 "name": file.filename,
@@ -101,11 +115,11 @@ class DocumentRepository:
         Uploads a file to the specified folder in the document repository.
 
         Args:
-            @param metadata_repo: The repository for accessing metadata.
-            @param user_repo: The repository for accessing user information.
-            @param file: The file to be uploaded.
-            @param folder: The folder in which the file should be uploaded.
-            @param user: The token data of the user.
+            metadata_repo: The repository for accessing metadata.
+            user_repo: The repository for accessing user information.
+            file: The file to be uploaded.
+            folder: The folder in which the file should be uploaded.
+            user: The token data of the user.
 
         Returns:
             @return: A dictionary containing the response and upload information.
@@ -120,7 +134,7 @@ class DocumentRepository:
                 msg=f"File type {file_type} not supported."
             )
 
-        contents = file.file.read()
+        contents = await file.read()
 
         doc = (await metadata_repo.get(document=file.filename, owner=user)).__dict__
         # hash of the file uploaded to check if change in file
@@ -149,7 +163,7 @@ class DocumentRepository:
                     file=file, folder=folder, contents=contents, file_type=file_type, user=user
                 )
 
-            print("File already present, checking if there is an update...")
+            print(f"File {file.filename} already present, checking if there is an update...")
 
             if doc["file_hash"] != new_file_hash:
                 print("File has been updated, uploading new version...")
@@ -179,28 +193,6 @@ class DocumentRepository:
             ) from e
 
         return {"message": f"successfully downloaded {name} in downloads folder."}
-
-    async def perm_delete(
-            self, file: str, bin_list: List[Row | Row],
-            delete_all: bool, meta_repo: DocumentMetadataRepository, user: TokenData
-    ) -> None:
-
-        if delete_all:
-            for files in bin_list:
-                s3_url = files.DocumentMetadata.s3_url
-
-                key = await get_key(s3_url=s3_url)
-                await self._delete_object(key=key)
-                await meta_repo.perm_delete(document=None, owner=user, delete_all=delete_all)
-        else:
-            for files in bin_list:
-                if files.DocumentMetadata.name == file:
-                    s3_url = files.DocumentMetadata.s3_url
-
-                    key = await get_key(s3_url=s3_url)
-                    await self._delete_object(key=key)
-                    await meta_repo.perm_delete(document=files.DocumentMetadata.id, owner=user, delete_all=False)
-                    break
 
     async def preview(self, document: Dict[str, Any]) -> FileResponse:
 
